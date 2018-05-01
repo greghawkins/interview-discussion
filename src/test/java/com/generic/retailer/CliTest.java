@@ -1,5 +1,6 @@
 package com.generic.retailer;
 
+import com.generic.retailer.service.RetailerService;
 import org.junit.Test;
 
 import java.io.BufferedReader;
@@ -87,7 +88,7 @@ public class CliTest {
     if (notThursday.getDayOfWeek().equals(DayOfWeek.THURSDAY)) {
       notThursday.plusDays(1);
     }
-    Cli cli = Cli.create(">", reader, new BufferedWriter(writer), notThursday);
+    Cli cli = Cli.create(">", reader, new BufferedWriter(writer), new RetailerService(), notThursday);
     cli.run();
     assertReceipt(
         writer,
@@ -113,7 +114,7 @@ public class CliTest {
     if (notThursday.getDayOfWeek().equals(DayOfWeek.THURSDAY)) {
       notThursday.plusDays(1);
     }
-    Cli cli = Cli.create(">", reader, new BufferedWriter(writer), notThursday);
+    Cli cli = Cli.create(">", reader, new BufferedWriter(writer), new RetailerService(),notThursday);
     cli.run();
     assertReceipt(
         writer,
@@ -136,9 +137,9 @@ public class CliTest {
     StringWriter writer = new StringWriter();
     LocalDate notThursday = LocalDate.now();
     if (notThursday.getDayOfWeek().equals(DayOfWeek.THURSDAY)) {
-      notThursday.plusDays(1);
+      notThursday = notThursday.plusDays(1);
     }
-    Cli cli = Cli.create(">", reader, new BufferedWriter(writer), notThursday);
+    Cli cli = Cli.create(">", reader, new BufferedWriter(writer), new RetailerService(), notThursday);
     cli.run();
     assertReceipt(
         writer,
@@ -162,9 +163,9 @@ public class CliTest {
     StringWriter writer = new StringWriter();
     LocalDate thursday = LocalDate.now();
     while (!thursday.getDayOfWeek().equals(DayOfWeek.THURSDAY)) {
-      thursday.plusDays(1);
+      thursday = thursday.plusDays(1);
     }
-    Cli cli = Cli.create(">", reader, new BufferedWriter(writer), thursday);
+    Cli cli = Cli.create(">", reader, new BufferedWriter(writer), new RetailerService(), thursday);
     cli.run();
     assertReceipt(
         writer,
@@ -189,9 +190,9 @@ public class CliTest {
     StringWriter writer = new StringWriter();
     LocalDate thursday = LocalDate.now();
     while (!thursday.getDayOfWeek().equals(DayOfWeek.THURSDAY)) {
-      thursday.plusDays(1);
+      thursday = thursday.plusDays(1);
     }
-    Cli cli = Cli.create(">", reader, new BufferedWriter(writer), thursday);
+    Cli cli = Cli.create(">", reader, new BufferedWriter(writer), new RetailerService(), thursday);
     cli.run();
     assertReceipt(
         writer,
@@ -201,7 +202,7 @@ public class CliTest {
         "2 FOR 1      -£15.00",
         "THURS         -£1.00",
         "====================",
-        "TOTAL         £24.00"
+        "TOTAL         £19.00"
     );
   }
 }

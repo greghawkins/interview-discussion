@@ -1,5 +1,9 @@
 package com.generic.retailer;
 
+import com.generic.retailer.domain.ProductFactory;
+import com.generic.retailer.exceptions.ProductNotFoundException;
+import com.generic.retailer.service.RetailerService;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -12,15 +16,16 @@ import static java.util.Objects.requireNonNull;
 
 public final class Cli implements AutoCloseable {
 
-  public static Cli create(String prompt, BufferedReader reader, BufferedWriter writer, LocalDate date) {
+
+  public static Cli create(String prompt, BufferedReader reader, BufferedWriter writer, RetailerService retailerService, LocalDate date) {
     requireNonNull(prompt);
     requireNonNull(reader);
     requireNonNull(writer);
-    return new Cli(prompt, reader, writer, date);
+    return new Cli(prompt, reader, writer, retailerService, date);
   }
 
-  public static Cli create(BufferedReader reader, BufferedWriter writer) {
-    return new Cli(">", reader, writer, LocalDate.now());
+  public static Cli create(BufferedReader reader, BufferedWriter writer, RetailerService retailerService) {
+    return new Cli(">", reader, writer, retailerService, LocalDate.now());
   }
 
   private static final Predicate<String> WHITESPACE = Pattern.compile("^\\s{0,}$").asPredicate();
@@ -29,11 +34,13 @@ public final class Cli implements AutoCloseable {
   private final BufferedReader reader;
   private final BufferedWriter writer;
   private final LocalDate date;
+  private final RetailerService retailerService;
 
-  private Cli(String prompt, BufferedReader reader, BufferedWriter writer, LocalDate date) {
+  private Cli(String prompt, BufferedReader reader, BufferedWriter writer, RetailerService retailerService, LocalDate date) {
     this.prompt = prompt;
     this.reader = reader;
     this.writer = writer;
+    this.retailerService = retailerService;
     this.date = date;
   }
 
@@ -57,11 +64,18 @@ public final class Cli implements AutoCloseable {
     prompt();
     Optional<String> line = readLine();
     while (line.isPresent()) {
-      writeLine("Would you like anything else?");
+      try {
+        retailerService.addProductToTrolley(ProductFactory.getProduct(line.get()));
+        writeLine("Would you like anything else?");
+      }
+      catch (ProductNotFoundException e) {
+        writeLine("The product type you entered is not available. If you would like to add another product, please enter either: Book, CD, or DVD.");
+      }
       prompt();
       line = readLine();
     }
-    writeLine(String.format("Thank you for visiting Generic Retailer, your total is %s", 0));
+    writeLine(String.format("Thank you for visiting Generic Retailer, your total is %s", "£" + String.format("%.2f", retailerService.getGrandTotalWithReductions(date))));
+    writeLine(retailerService.getReceipt(date));
   }
 
   @Override

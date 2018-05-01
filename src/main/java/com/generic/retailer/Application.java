@@ -1,5 +1,7 @@
 package com.generic.retailer;
 
+import com.generic.retailer.service.RetailerService;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.InputStreamReader;
@@ -11,7 +13,7 @@ public class Application {
 
     BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
     BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
-    try(Cli cli = Cli.create(reader, writer)) {
+    try(Cli cli = Cli.create(reader, writer, new RetailerService())) {
       cli.run();
     } catch (Exception e) {
       System.exit(1);
