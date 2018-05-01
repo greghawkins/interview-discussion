@@ -86,7 +86,7 @@ public class CliTest {
     StringWriter writer = new StringWriter();
     LocalDate notThursday = LocalDate.now();
     if (notThursday.getDayOfWeek().equals(DayOfWeek.THURSDAY)) {
-      notThursday.plusDays(1);
+      notThursday = notThursday.plusDays(1);
     }
     Cli cli = Cli.create(">", reader, new BufferedWriter(writer), new RetailerService(), notThursday);
     cli.run();
@@ -112,7 +112,7 @@ public class CliTest {
     StringWriter writer = new StringWriter();
     LocalDate notThursday = LocalDate.now();
     if (notThursday.getDayOfWeek().equals(DayOfWeek.THURSDAY)) {
-      notThursday.plusDays(1);
+      notThursday = notThursday.plusDays(1);
     }
     Cli cli = Cli.create(">", reader, new BufferedWriter(writer), new RetailerService(),notThursday);
     cli.run();
